@@ -1,0 +1,14 @@
+---
+title: "README"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+This package contains functions for reconciling study site data and biorepository data. 
+
+Install:
+
+```{r, eval = FALSE}
+devtools::install_github("NateByers/Reconcile")
+```
