@@ -99,6 +99,9 @@ reconcileVisits <- function(repository.data, site.data, repo.subject.column, rep
                             repo.specimen.column, site.subject.column, site.visit.column,
                             site.specimen.column 
 ){
+  # repository.data = repository; site.data = site; repo.subject.column = "subject"; repo.visit.column = "visit"
+  # repo.specimen.column = "specimen"; site.subject.column = "patno"; site.visit.column = "clinevent" 
+  # site.specimen.column = "sample"
   names(repository.data)[names(repository.data) == repo.specimen.column] = "repository_specimen"
   names(site.data)[names(site.data) == site.specimen.column] = "site_specimen"
   repository.data$specimen = repository.data$repository_specimen
@@ -107,6 +110,9 @@ reconcileVisits <- function(repository.data, site.data, repo.subject.column, rep
                      by.y = c(site.subject.column, site.visit.column, "specimen"), all = TRUE)
   merged.df <- subset(merged.df, select = -specimen)
   names(merged.df)[names(merged.df) %in% c(repo.subject.column, repo.visit.column)] = c("subject", "visit")
+  merged.df <- group_by(merged.df, subject, visit) %>% 
+    mutate(totalNAs = sum(is.na(repository_specimen), is.na(site_specimen))) %>%
+    filter(totalNAs > 0) %>% select(-(totalNAs))
   merged.df
 }
 
