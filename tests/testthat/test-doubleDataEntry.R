@@ -36,11 +36,11 @@ test_that("warning message for ids that don't match", {
 })
 
 test_that("output column names are correct",{
-  expect_equal(names(test), c("error_number", "id", "x", "y"))
+  expect_equal(names(test1), c("error_number", "id", "x", "y"))
 })
 
 test_that("id columns are pasted together", {
-  expect_equal(length(strsplit(test$id[1], "-")[[1]]), length(c("subject", "visit", "case")))
+  expect_equal(length(strsplit(test1$id[1], "-")[[1]]), length(c("subject", "visit", "case")))
 })
 
 test_that("output catches number of errors", {
