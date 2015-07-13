@@ -27,8 +27,8 @@ reconcileVisits(repository.data, site.data, repo.subject.column,
 }
 \value{
 A \code{data.frame} with columns \code{subject}, \code{visit}, \code{repository_specimen},
-and \code{site_specimen}. An \code{NA} indicates that the corresponding specimen type was not found in
-either the site data or biorepository data. For example, if a subject/visit contains \code{"DNA"} in the
+and \code{site_specimen}. An \code{NA} indicates that the corresponding specimen type was not found.
+For example, if a subject/visit contains \code{"DNA"} in the
 \code{repository_specimen} column and \code{NA} in the \code{site_specimen} column, then the site data is
 missing a DNA sample for that subject/visit. (This does not give any information about the number of samples
 for each specimen--only whether or not at least a single specimen for each subject/visit is present in either data

@@ -39,7 +39,6 @@ reconcileSubjectVisits <- function(report.type = c("data.no.samples", "samples.n
                                 repository.data, site.data, repo.subject.column, 
                                 repo.visit.column, site.subject.column, site.visit.column    
                                 ){
-
   repository.data <- unique(repository.data[, c(repo.subject.column, repo.visit.column)])
   site.data <- unique(site.data[, c(site.subject.column, site.visit.column)])
   if(report.type[1] == "data.no.samples"){
@@ -76,8 +75,8 @@ reconcileSubjectVisits <- function(report.type = c("data.no.samples", "samples.n
 #' @param site.visit.column Column name of visit in repository \code{data.frame}
 #' @param site.specimen.column  Column name of specimen in site \code{data.frame}
 #' @return A \code{data.frame} with columns \code{subject}, \code{visit}, \code{repository_specimen},
-#' and \code{site_specimen}. An \code{NA} indicates that the corresponding specimen type was not found in 
-#' either the site data or biorepository data. For example, if a subject/visit contains \code{"DNA"} in the 
+#' and \code{site_specimen}. An \code{NA} indicates that the corresponding specimen type was not found.
+#' For example, if a subject/visit contains \code{"DNA"} in the 
 #' \code{repository_specimen} column and \code{NA} in the \code{site_specimen} column, then the site data is 
 #' missing a DNA sample for that subject/visit. (This does not give any information about the number of samples
 #' for each specimen--only whether or not at least a single specimen for each subject/visit is present in either data
@@ -99,9 +98,6 @@ reconcileVisits <- function(repository.data, site.data, repo.subject.column, rep
                             repo.specimen.column, site.subject.column, site.visit.column,
                             site.specimen.column 
 ){
-  # repository.data = repository; site.data = site; repo.subject.column = "subject"; repo.visit.column = "visit"
-  # repo.specimen.column = "specimen"; site.subject.column = "patno"; site.visit.column = "clinevent" 
-  # site.specimen.column = "sample"
   names(repository.data)[names(repository.data) == repo.specimen.column] = "repository_specimen"
   names(site.data)[names(site.data) == site.specimen.column] = "site_specimen"
   repository.data$specimen = repository.data$repository_specimen
@@ -162,4 +158,66 @@ reconcileAliquots <- function(repository.data, site.data, repo.subject.column, r
                      by.y = c(site.subject.column, site.visit.column, site.specimen.column), all = TRUE)
   names(merged.df)[names(merged.df) %in% c(repo.subject.column, repo.visit.column, repo.specimen.column)] = c("subject", "visit", "specimen")
   merged.df
+}
+
+#' Double data entry check
+#' 
+#' This function takes two data frames that have identical column names, which should also have idenctical records,
+#' and returns a table of errors where the two tables don't match up.
+#' 
+#' @param x,y Two \code{data.frame}s with identical column names
+#' @param id Character vector of column(s) to join the two \code{data.frame}s
+#' @return A \code{data.frame} with columns \code{error_number}, \code{id}, \code{x}, 
+#' and \code{y}. The last two columns specify what the discrepancy is for each input
+#' \code{data.frame}.
+#' @examples 
+#' repository_A <- data.frame(subject = rep(LETTERS[1:5], 2), visit = rep(1:5, 2), case = 1:10,
+#'                            specimen = c(rep("DNA", 2), rep("Plasma", 3), 
+#'                            rep("Serum", 3), rep("RNA", 2)),
+#'                            aliquots = 1:10, stringsAsFactors = FALSE)
+#' 
+#' repository_B <- data.frame(subject = c(rep(LETTERS[1:5], 2), rep(LETTERS[6], 2)), 
+#'                            visit = c(rep(1:5, 2), 6:7), case = 1:12,
+#'                            specimen = c(rep("DNA", 2), rep("Plasma", 2), "RNA", 
+#'                                         rep("Serum", 2), rep("RNA", 2), rep("DNA", 3)),
+#'                            aliquots = c(NA, 2:8, 12, 10, 11, 13), stringsAsFactors = FALSE)
+#'                            
+#' errors <- doubleDataEntry(repository_A, repository_B, id = c("subject", "visit", "case"))          
+
+doubleDataEntry <- function(x, y, id){
+  # x = repository_A; y = repository_B; id = c("subject", "visit", "case")
+  if(sum(!(names(x) %in% names(y))) > 0 | sum(!(names(y) %in% names(x))) > 0){
+    stop("column names aren't identical")
+  }
+  if(length(id) > 1){
+    id_x <- do.call(paste, c(x[id], sep="-")) 
+    x <- select(x, one_of(names(x)[!(names(x) %in% id)]))
+    x$id <- id_x
+    id_y <- do.call(paste, c(y[id], sep="-"))
+    y <- select(y, one_of(names(y)[!(names(y) %in% id)]))
+    y$id <- id_y
+    id <- "id"
+  }
+  if(sum(!(x$id %in% y$id)) > 0 | sum(!(y$id %in% x$id)) > 0){
+    warning("Some ids don't match") 
+  }
+  x_anti_joins <- suppressMessages(lapply(names(x)[names(x) != id], function(column){
+    df <- anti_join(x[, c(column, id)], y[, c(column, id)])
+    df[, column] <- paste(column, df[, column], sep = " = ")
+    names(df)[names(df) == column] <- "x"
+    df
+  }))
+  x_anti_joins <- Reduce(rbind, x_anti_joins)
+  y_anti_joins <- suppressMessages(lapply(names(y)[names(y) != id], function(column){
+    df <- anti_join(y[, c(column, id)], x[, c(column, id)])
+    df[, column] <- paste(column, df[, column], sep = " = ")
+    names(df)[names(df) == column] <- "y"
+    df
+  }))
+  y_anti_joins <- Reduce(rbind, y_anti_joins)
+  error_table <- suppressMessages(inner_join(x_anti_joins, y_anti_joins))
+  error_table <- arrange(error_table, id)
+  error_table$error_number <- 1:dim(error_table)[1]
+  error_table <- error_table[, c("error_number", id, "x", "y")]
+  error_table
 }
