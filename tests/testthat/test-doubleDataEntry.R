@@ -11,7 +11,7 @@ repository_B <- data.frame(subject = c(rep(LETTERS[1:5], 2), rep(LETTERS[6], 2))
                            visit = c(rep(1:5, 2), 6:7), case = 1:12,
                            specimen = c(rep("DNA", 2), rep("Plasma", 2), "RNA", 
                                         rep("Serum", 2), rep("RNA", 2), rep("DNA", 3)),
-                           aliquots = c(NA, 2:8, 12, 10, 11, 13), stringsAsFactors = FALSE)
+                           aliquots = c(NA, 2:7, 19, 12, 10, 11, 13), stringsAsFactors = FALSE)
 
 repository_C <- data.frame(subject = c(rep(LETTERS[1:5], 2), rep(LETTERS[6], 2)), 
                            visit = c(rep(1:5, 2), 6:7), case = 1:12,
@@ -44,6 +44,6 @@ test_that("id columns are pasted together", {
 })
 
 test_that("output catches number of errors", {
-  expect_equal(dim(test1)[1], 5)
-  expect_equal(dim(test2)[1], 4)
+  expect_equal(dim(test1)[1], 6)
+  expect_equal(dim(test2)[1], 5)
 })

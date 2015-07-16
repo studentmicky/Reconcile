@@ -201,21 +201,16 @@ doubleDataEntry <- function(x, y, id){
   if(sum(!(x$id %in% y$id)) > 0 | sum(!(y$id %in% x$id)) > 0){
     warning("Some ids don't match") 
   }
-  x_anti_joins <- suppressMessages(lapply(names(x)[names(x) != id], function(column){
-    df <- anti_join(x[, c(column, id)], y[, c(column, id)])
-    df[, column] <- paste(column, df[, column], sep = " = ")
-    names(df)[names(df) == column] <- "x"
-    df
+  anti_joins <- suppressMessages(lapply(names(x)[names(x) != id], function(column){
+    x_anti_join <- anti_join(x[, c(column, id)], y[, c(column, id)])
+    x_anti_join[, column] <- paste(column, x_anti_join[, column], sep = " = ")
+    names(x_anti_join)[names(x_anti_join) == column] <- "x"
+    y_anti_join <- anti_join(y[, c(column, id)], x[, c(column, id)])
+    y_anti_join[, column] <- paste(column, y_anti_join[, column], sep = " = ")
+    names(y_anti_join)[names(y_anti_join) == column] <- "y"
+    inner_join(x_anti_join, y_anti_join)
   }))
-  x_anti_joins <- Reduce(rbind, x_anti_joins)
-  y_anti_joins <- suppressMessages(lapply(names(y)[names(y) != id], function(column){
-    df <- anti_join(y[, c(column, id)], x[, c(column, id)])
-    df[, column] <- paste(column, df[, column], sep = " = ")
-    names(df)[names(df) == column] <- "y"
-    df
-  }))
-  y_anti_joins <- Reduce(rbind, y_anti_joins)
-  error_table <- suppressMessages(inner_join(x_anti_joins, y_anti_joins))
+  error_table <- Reduce(rbind, anti_joins)
   error_table <- arrange(error_table, id)
   error_table$error_number <- 1:dim(error_table)[1]
   error_table <- error_table[, c("error_number", id, "x", "y")]
