@@ -22,9 +22,15 @@ repository_C <- data.frame(subject = c(rep(LETTERS[1:5], 2), rep(LETTERS[6], 2))
 repository_D <- repository_B
 names(repository_D)[5] <- "aliquot"
 
+repository_E <- repository_A
+repository_E[10, "specimen"] <- "DNA"
+
+
 test1 <- doubleDataEntry(repository_A, repository_B, id = c("subject", "visit", "case"))
 
 test2 <- doubleDataEntry(repository_B, repository_C, id = c("subject", "visit", "case"))
+
+test3 <- doubleDataEntry(repository_A, repository_E, id = c("subject", "visit", "case"))
 
 test_that("function stops if column names are different", {
   expect_error(doubleDataEntry(repository_A, repository_D, "case"), "column names aren't identical")
@@ -46,4 +52,5 @@ test_that("id columns are pasted together", {
 test_that("output catches number of errors", {
   expect_equal(dim(test1)[1], 6)
   expect_equal(dim(test2)[1], 5)
+  expect_equal(dim(test3)[1], 1)
 })

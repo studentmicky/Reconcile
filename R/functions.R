@@ -185,7 +185,7 @@ reconcileAliquots <- function(repository.data, site.data, repo.subject.column, r
 #' errors <- doubleDataEntry(repository_A, repository_B, id = c("subject", "visit", "case"))          
 
 doubleDataEntry <- function(x, y, id){
-  # x = repository_A; y = repository_B; id = c("subject", "visit", "case")
+  # x = repository_A; y = repository_E; id = c("subject", "visit", "case")
   if(sum(!(names(x) %in% names(y))) > 0 | sum(!(names(y) %in% names(x))) > 0){
     stop("column names aren't identical")
   }
@@ -202,7 +202,14 @@ doubleDataEntry <- function(x, y, id){
     warning("Some ids don't match") 
   }
   anti_joins <- suppressMessages(lapply(names(x)[names(x) != id], function(column){
+    # column = "aliquots"
     x_anti_join <- anti_join(x[, c(column, id)], y[, c(column, id)])
+    if(dim(x_anti_join)[1] == 0){
+      names(x_anti_join)[names(x_anti_join) == column] <- "x"
+      x_anti_join[1, ] <- c(NA, NA)
+      x_anti_join$y <- NA
+      return(x_anti_join)
+    }
     x_anti_join[, column] <- paste(column, x_anti_join[, column], sep = " = ")
     names(x_anti_join)[names(x_anti_join) == column] <- "x"
     y_anti_join <- anti_join(y[, c(column, id)], x[, c(column, id)])
@@ -211,8 +218,11 @@ doubleDataEntry <- function(x, y, id){
     inner_join(x_anti_join, y_anti_join)
   }))
   error_table <- Reduce(rbind, anti_joins)
+  error_table <- filter(error_table, !is.na(x))
   error_table <- arrange_(error_table, id)
   error_table$error_number <- 1:dim(error_table)[1]
   error_table <- error_table[, c("error_number", id, "x", "y")]
   error_table
 }
+
+
