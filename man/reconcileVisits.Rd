@@ -6,7 +6,7 @@
 \usage{
 reconcileVisits(repository.data, site.data, repo.subject.column,
   repo.visit.column, repo.specimen.column, site.subject.column,
-  site.visit.column, site.specimen.column)
+  site.visit.column, site.specimen.column, simplify = FALSE)
 }
 \arguments{
 \item{repository.data}{\code{data.frame} of repository data with columns that will provide unique rows of interest}
