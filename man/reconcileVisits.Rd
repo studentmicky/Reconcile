@@ -39,12 +39,12 @@ This function looks at a subject/visit and helps you see if specimen data are mi
 site or from the biorepository.
 }
 \examples{
-repository <- data.frame(subject = c(LETTERS[1:5], LETTERS[1:5]), visit = c(1:5, 1:5),
-                         specimen = c(rep("blood", 5), rep("DNA", 5)),
+repository <- data.frame(subject = c(LETTERS[1:5], LETTERS[1:6]), visit = c(1:5, 1:6),
+                         specimen = c(rep("blood", 5), rep("DNA", 5), "serum"),
                          stringsAsFactors = FALSE)
 
-site <- data.frame(patno = c(LETTERS[2:6], LETTERS[2:6]), clinevent = c(2:6, 2:6),
-                   sample = c("RNA", rep("blood", 4), "Serum", rep("DNA",  4)),
+site <- data.frame(patno = c(LETTERS[2:6], LETTERS[2:6], "F"), clinevent = c(2:6, 2:6, 6),
+                   sample = c("RNA", rep("blood", 4), "serum", rep("DNA",  4), "serum"),
                    stringsAsFactors = FALSE)
 
 reconcileVisits(repository.data = repository, site.data = site, repo.subject.column = "subject",

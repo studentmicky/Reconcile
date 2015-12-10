@@ -82,20 +82,21 @@ reconcileSubjectVisits <- function(report.type = c("data.no.samples", "samples.n
 #' for each specimen--only whether or not at least a single specimen for each subject/visit is present in either data
 #' set.)
 #' @examples
-#' repository <- data.frame(subject = c(LETTERS[1:5], LETTERS[1:5]), visit = c(1:5, 1:5),
-#'                          specimen = c(rep("blood", 5), rep("DNA", 5)),
+#' repository <- data.frame(subject = c(LETTERS[1:5], LETTERS[1:6]), visit = c(1:5, 1:6),
+#'                          specimen = c(rep("blood", 5), rep("DNA", 5), "serum"),
 #'                          stringsAsFactors = FALSE)
 #'
-#' site <- data.frame(patno = c(LETTERS[2:6], LETTERS[2:6]), clinevent = c(2:6, 2:6),
-#'                    sample = c("RNA", rep("blood", 4), "Serum", rep("DNA",  4)),
+#' site <- data.frame(patno = c(LETTERS[2:6], LETTERS[2:6], "F"), clinevent = c(2:6, 2:6, 6),
+#'                    sample = c("RNA", rep("blood", 4), "serum", rep("DNA",  4), "serum"),
 #'                    stringsAsFactors = FALSE)
 #'
 #' reconcileVisits(repository.data = repository, site.data = site, repo.subject.column = "subject",
 #'                 repo.visit.column = "visit", repo.specimen.column = "specimen", site.subject.column = "patno",
 #'                 site.visit.column = "clinevent", site.specimen.column = "sample")
 
-reconcileVisits <- function(repository.data, site.data, repo.subject.column, repo.visit.column,
-                            repo.specimen.column, site.subject.column, site.visit.column,
+reconcileVisits <- function(repository.data, site.data, repo.subject.column,
+                            repo.visit.column, repo.specimen.column,
+                            site.subject.column, site.visit.column,
                             site.specimen.column, simplify = FALSE
 ){
   names(repository.data)[names(repository.data) == repo.specimen.column] = "repository_specimen"
@@ -110,11 +111,11 @@ reconcileVisits <- function(repository.data, site.data, repo.subject.column, rep
     mutate(totalNAs = sum(is.na(repository_specimen), is.na(site_specimen))) %>%
     filter(totalNAs > 0) %>% select(-(totalNAs))
   if(simplify){
-    merged.df <- merged.df %>% group_by(subject, visit) %>% 
+    merged.df <- merged.df %>% group_by(subject, visit) %>%
       summarize(repository_specimen = paste(repository_specimen[!is.na(repository_specimen)], collapse = ","),
                 site_specimen = paste(site_specimen[!is.na(site_specimen)], collapse = ","))
   }
-  merged.df
+  as.data.frame(merged.df)
 }
 
 #' Checks if there are unequal aliquots for a subject/visit/specimen between the site and biorepository
