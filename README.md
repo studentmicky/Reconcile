@@ -3,5 +3,5 @@ This package contains functions for reconciling study site data and biorepositor
 Install:
 
 ``` r
-devtools::install_github("MMGE/Reconcile", host = "github.iu.edu/api/v3")
+devtools::install_github("NateBYers/Reconcile")
 ```
