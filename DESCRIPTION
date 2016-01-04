@@ -1,11 +1,15 @@
 Package: Reconcile
 Type: Package
 Title: Functions for reconciling study site data with biorepository database
-Version: 0.2
+Version: 0.3
 Date: 2015-05-27
 Author: Nathan Byers
 Maintainer: Nathan Byers <natebyers@gmail.com>
-Description: Functions for reconciling study site data with biorepository database
-Depends: dplyr
+Description: Functions for reconciling study site data with biorepository
+    database
+Depends:
+    dplyr
 License: GPL-3
-Suggests: testthat
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
