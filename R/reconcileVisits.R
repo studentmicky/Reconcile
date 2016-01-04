@@ -11,6 +11,7 @@
 #' @param site.subject.column Column name of subject IDs in site \code{data.frame}
 #' @param site.visit.column Column name of visit in repository \code{data.frame}
 #' @param site.specimen.column  Column name of specimen in site \code{data.frame}
+#' @param simplify Simplify the output
 #' @return A \code{data.frame} with columns \code{subject}, \code{visit}, \code{repository_specimen},
 #' and \code{site_specimen}. An \code{NA} indicates that the corresponding specimen type was not found.
 #' For example, if a subject/visit contains \code{"DNA"} in the

@@ -24,6 +24,8 @@ reconcileVisits(repository.data, site.data, repo.subject.column,
 \item{site.visit.column}{Column name of visit in repository \code{data.frame}}
 
 \item{site.specimen.column}{Column name of specimen in site \code{data.frame}}
+
+\item{simplify}{Simplify the output}
 }
 \value{
 A \code{data.frame} with columns \code{subject}, \code{visit}, \code{repository_specimen},
