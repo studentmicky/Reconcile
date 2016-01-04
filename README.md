@@ -3,5 +3,5 @@ This package contains functions for reconciling study site data and biorepositor
 Install:
 
 ``` r
-devtools::install_github("NateBYers/Reconcile")
+devtools::install_github("NateByers/Reconcile")
 ```
