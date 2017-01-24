@@ -23,7 +23,7 @@
 #' errors <- doubleDataEntry(repository_A, repository_B, id = c("subject", "visit", "case"))
 
 doubleDataEntry <- function(x, y, id){
-  # x = repository_A; y = repository_E; id = c("subject", "visit", "case")
+  
   if(sum(!(names(x) %in% names(y))) > 0 | sum(!(names(y) %in% names(x))) > 0){
     stop("column names aren't identical")
   }
@@ -56,6 +56,11 @@ doubleDataEntry <- function(x, y, id){
     inner_join(x_anti_join, y_anti_join)
   }))
   error_table <- Reduce(rbind, anti_joins)
+  if(dim(error_table)[1] == 0) {
+    error_table <- data.frame(error_number = integer(), id = character(),
+                              x = character(), y = character())
+    return(error_table)
+  }
   error_table <- filter(error_table, !is.na(x))
   error_table <- arrange_(error_table, id)
   error_table$error_number <- 1:dim(error_table)[1]
