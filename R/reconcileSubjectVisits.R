@@ -34,7 +34,7 @@
 #'                        repo.visit.column = "visit", site.subject.column = "patno",
 #'                        site.visit.column = "clinevent")
 #'
-
+#' @export
 reconcileSubjectVisits <- function(report.type = c("data.no.samples", "samples.no.data"),
                                    repository.data, site.data, repo.subject.column,
                                    repo.visit.column, site.subject.column, site.visit.column

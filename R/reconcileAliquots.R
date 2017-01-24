@@ -27,7 +27,7 @@
 #'                   repo.visit.column = "visit", repo.specimen.column = "specimen",
 #'                   site.subject.column = "patno", site.visit.column = "clinevent",
 #'                   site.specimen.column = "sample")
-
+#' @export
 reconcileAliquots <- function(repository.data, site.data, repo.subject.column, repo.visit.column,
                               repo.specimen.column, site.subject.column, site.visit.column,
                               site.specimen.column

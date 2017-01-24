@@ -1,5 +1,6 @@
 #' Double data entry check
 #'
+#' Deprecated--use \code{double_entry_check()}.
 #' This function takes two data frames that have identical column names, which should also have idenctical records,
 #' and returns a table of errors where the two tables don't match up.
 #'
@@ -21,7 +22,7 @@
 #'                            aliquots = c(NA, 2:8, 12, 10, 11, 13), stringsAsFactors = FALSE)
 #'
 #' errors <- doubleDataEntry(repository_A, repository_B, id = c("subject", "visit", "case"))
-
+#' @export
 doubleDataEntry <- function(x, y, id){
   
   if(sum(!(names(x) %in% names(y))) > 0 | sum(!(names(y) %in% names(x))) > 0){

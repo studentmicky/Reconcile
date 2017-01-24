@@ -31,7 +31,7 @@
 #' reconcileVisits(repository.data = repository, site.data = site, repo.subject.column = "subject",
 #'                 repo.visit.column = "visit", repo.specimen.column = "specimen", site.subject.column = "patno",
 #'                 site.visit.column = "clinevent", site.specimen.column = "sample")
-
+#' @export
 reconcileVisits <- function(repository.data, site.data, repo.subject.column,
                             repo.visit.column, repo.specimen.column,
                             site.subject.column, site.visit.column,
