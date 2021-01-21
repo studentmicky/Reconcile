@@ -63,7 +63,7 @@ doubleDataEntry <- function(x, y, id){
     return(error_table)
   }
   error_table <- filter(error_table, !is.na(x))
-  error_table <- arrange_(error_table, id)
+  error_table <- arrange(error_table, id)
   error_table$error_number <- 1:dim(error_table)[1]
   error_table <- error_table[, c("error_number", id, "x", "y")]
   error_table
